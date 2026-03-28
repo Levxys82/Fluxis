@@ -1,0 +1,82 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D1117;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A237E;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Neon Gold Gradient -->
+    <linearGradient id="graph_grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF9100;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
+    </filter>
+    <filter id="neon_glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="inner_glow">
+      <feFlood flood-color="#4FC3F7" flood-opacity="0.3" result="color"/>
+      <feComposite in="color" in2="SourceAlpha" operator="out" result="shadow"/>
+      <feGaussianBlur stdDeviation="20" in="shadow" result="blur"/>
+      <feComposite in="blur" in2="SourceAlpha" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="glow"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Square with Inner Glow -->
+  <rect width="512" height="512" rx="100" fill="url(#bg_grad)" filter="url(#inner_glow)" />
+  
+  <!-- Animated Wind Lines -->
+  <g opacity="0.15">
+    <path d="M100 400C150 350 250 450 400 350" stroke="#4FC3F7" stroke-width="40" stroke-linecap="round" filter="url(#blur)">
+      <animate attributeName="d" values="M100 400C150 350 250 450 400 350;M100 380C150 400 250 380 400 420;M100 400C150 350 250 450 400 350" dur="8s" repeatCount="indefinite" />
+    </path>
+  </g>
+
+  <!-- Stylized F / Chart Backdrop -->
+  <path d="M160 380V130H350V190H220V260H300V320H220V380H160Z" fill="white" fill-opacity="0.05">
+    <animate attributeName="fill-opacity" values="0.05;0.08;0.05" dur="4s" repeatCount="indefinite" />
+  </path>
+
+  <!-- Data Particles (Small light dots) -->
+  <g filter="url(#neon_glow)">
+    <circle r="3" fill="white">
+      <animateMotion path="M140 380L220 300L290 340L400 160" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
+    </circle>
+    <circle r="2" fill="white">
+      <animateMotion path="M140 380L220 300L290 340L400 160" dur="4s" begin="1s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0;1;0" dur="4s" begin="1s" repeatCount="indefinite" />
+    </circle>
+  </g>
+
+  <!-- Main Graph Line -->
+  <path d="M140 380L220 300L290 340L400 160" stroke="url(#graph_grad)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" filter="url(#neon_glow)" />
+  
+  <!-- Node Points (Shiny dots on vertices) -->
+  <g fill="white" filter="url(#neon_glow)">
+    <circle cx="140" cy="380" r="6" />
+    <circle cx="220" cy="300" r="6" />
+    <circle cx="290" cy="340" r="6" />
+    <circle cx="400" cy="160" r="8" />
+  </g>
+
+  <!-- Arrow Head -->
+  <path d="M400 160H330M400 160V230" stroke="#FF9100" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 5,-5; 0,0" dur="2s" repeatCount="indefinite" />
+  </path>
+
+  <!-- Shield Outline -->
+  <path d="M256 60L100 120V240C100 340 170 430 256 460C342 430 412 340 412 240V120L256 60Z" stroke="white" stroke-width="8" stroke-opacity="0.2" fill="none">
+    <animate attributeName="stroke-opacity" values="0.1;0.3;0.1" dur="5s" repeatCount="indefinite" />
+  </path>
+</svg>

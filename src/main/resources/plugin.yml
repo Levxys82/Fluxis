@@ -1,0 +1,31 @@
+name: Fluxis
+version: 1.0.0
+main: com.skywind.fluxis.core.Fluxis
+api-version: 1.20
+description: Modular Economy Ecosystem (Core, Plus, Action, TradeGUI)
+authors: [Levxys, SkyWind]
+website: https://github.com/Levxys/Fluxis
+softdepend: [PlaceholderAPI]
+commands:
+  fluxis:
+    description: Main command for Fluxis
+    usage: /<command>
+  market:
+    description: Open the dynamic market
+    usage: /<command>
+  shop:
+    description: Open the dynamic shop
+    usage: /<command>
+  sell:
+    description: Open the sell menu to Fluxis vault
+    usage: /<command>
+  auction:
+    description: Open the Fluxis Action auction house
+    usage: /<command>
+  trade:
+    description: Start a trade with a player
+    usage: /<command> <player>
+permissions:
+  fluxis.admin:
+    description: Admin permissions for Fluxis
+    default: op
