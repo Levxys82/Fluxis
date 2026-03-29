@@ -1,38 +1,70 @@
 package com.skywind.fluxis.core.manager;
 
 import com.skywind.fluxis.core.Fluxis;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.RegisteredServiceProvider;
+
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Map;
+import java.util.logging.Level;
 
 public class EconomyManager {
     
     private final Fluxis core;
-    private final Map<UUID, Double> balances = new ConcurrentHashMap<>();
+    private Economy economy;
 
     public EconomyManager(Fluxis core) {
         this.core = core;
+        setupEconomy();
+    }
+
+    private void setupEconomy() {
+        RegisteredServiceProvider<Economy> rsp = core.getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp != null) {
+            this.economy = rsp.getProvider();
+        }
+    }
+
+    public boolean isReady() {
+        return economy != null;
+    }
+
+    public Economy getProvider() {
+        return economy;
     }
 
     public double getBalance(UUID uuid) {
-        double starting = core.getConfig().getDouble("economy.starting_balance", 0.0);
-        return balances.getOrDefault(uuid, starting);
-    }
-
-    public void setBalance(UUID uuid, double amount) {
-        balances.put(uuid, amount);
+        if (!isReady()) return 0.0;
+        OfflinePlayer player = core.getServer().getOfflinePlayer(uuid);
+        return economy.getBalance(player);
     }
 
     public boolean withdraw(UUID uuid, double amount) {
-        double current = getBalance(uuid);
-        if (current >= amount) {
-            setBalance(uuid, current - amount);
-            return true;
+        if (!isReady()) return false;
+        if (amount <= 0) return false;
+        OfflinePlayer player = core.getServer().getOfflinePlayer(uuid);
+        var response = economy.withdrawPlayer(player, amount);
+        if (!response.transactionSuccess()) {
+            core.getLogger().log(
+                Level.WARNING,
+                "Vault withdraw failed for {0}: {1}",
+                new Object[]{player.getName() != null ? player.getName() : uuid.toString(), response.errorMessage}
+            );
         }
-        return false;
+        return response.transactionSuccess();
     }
 
     public void deposit(UUID uuid, double amount) {
-        setBalance(uuid, getBalance(uuid) + amount);
+        if (!isReady()) return;
+        if (amount <= 0) return;
+        OfflinePlayer player = core.getServer().getOfflinePlayer(uuid);
+        var response = economy.depositPlayer(player, amount);
+        if (!response.transactionSuccess()) {
+            core.getLogger().log(
+                Level.WARNING,
+                "Vault deposit failed for {0}: {1}",
+                new Object[]{player.getName() != null ? player.getName() : uuid.toString(), response.errorMessage}
+            );
+        }
     }
 }

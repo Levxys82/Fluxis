@@ -14,7 +14,7 @@ public class MarketTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        double stabilizationRate = core.getConfig().getDouble("market.stabilization_rate", 0.001);
+        double stabilizationRate = core.getShopConfig().getDouble("market.stabilization_rate", 0.001);
         
         core.getMarketManager().getMarketItems().values().forEach(item -> {
             // Price Stabilization (Drift back to base price)

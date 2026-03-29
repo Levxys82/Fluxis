@@ -22,8 +22,10 @@ public class AdminGUI {
     public void open(Player player) {
         Inventory inv = Bukkit.createInventory(null, 27, "§cFluxis Admin Panel");
 
-        // Reload Config
-        inv.setItem(10, createItem(Material.PAPER, "§eReload Config", "§7Reload all settings from config.yml"));
+        // Reload All Configs
+        inv.setItem(10, createItem(Material.PAPER, "§eReload All Configs",
+            "§7Reload config.yml, messages.yml, economy.yml,",
+            "§7shop.yml, database.yml and integration.yml"));
         
         // Reset Market Prices
         inv.setItem(12, createItem(Material.BLAZE_POWDER, "§cReset Market Prices", "§7Reset all item prices to their base values"));

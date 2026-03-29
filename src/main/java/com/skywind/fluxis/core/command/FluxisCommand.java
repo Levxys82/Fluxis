@@ -20,27 +20,49 @@ public class FluxisCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("This command is for players only!");
+            sender.sendMessage(core.message("errors.players_only", "{prefix}&cThis command is for players only!"));
             return true;
         }
 
-        if (label.equalsIgnoreCase("market") || label.equalsIgnoreCase("shop")) {
+        String commandName = command.getName();
+
+        if (commandName.equalsIgnoreCase("market") || commandName.equalsIgnoreCase("shop")) {
+            if (!player.hasPermission("fluxis.command.market")) {
+                player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
+                return true;
+            }
             core.getMarketGUI().open(player);
             return true;
         }
 
-        if (label.equalsIgnoreCase("sell")) {
+        if (commandName.equalsIgnoreCase("sell")) {
+            if (!player.hasPermission("fluxis.command.sell")) {
+                player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
+                return true;
+            }
             core.getSellGUI().open(player);
             return true;
         }
 
-        if (label.equalsIgnoreCase("auction")) {
+        if (commandName.equalsIgnoreCase("auction")) {
+            if (!player.hasPermission("fluxis.command.auction")) {
+                player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
+                return true;
+            }
             if (args.length >= 2 && args[0].equalsIgnoreCase("sell")) {
+                if (!player.hasPermission("fluxis.auction.sell")) {
+                    player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
+                    return true;
+                }
                 try {
                     double price = Double.parseDouble(args[1]);
+                    if (price <= 0) {
+                        player.sendMessage(core.message("errors.auction_price_positive", "{prefix}&cPrice must be greater than 0."));
+                        return true;
+                    }
                     ItemStack hand = player.getInventory().getItemInMainHand();
                     if (hand == null || hand.getType() == Material.AIR) {
-                        player.sendMessage("§cYou must hold an item in your hand!");
+                        player.sendMessage(core.message("errors.hold_item_required", "{prefix}&cYou must hold an item in your hand!"));
                         return true;
                     }
                     
@@ -48,9 +70,12 @@ public class FluxisCommand implements CommandExecutor {
                     core.getAuctionModule().getAuctionManager().listAction(
                         player.getUniqueId(), player.getName(), hand, price
                     );
-                    player.sendMessage("§aItem listed in Auction House for " + String.format("%.2f", price) + " Money");
+                    String msg = core.message("info.item_listed", "{prefix}&aItem listed in Auction House for {amount} {currency}");
+                    player.sendMessage(msg
+                        .replace("{amount}", String.format("%.2f", price))
+                        .replace("{currency}", core.getEconomyConfig().getString("currency.name", "Money")));
                 } catch (NumberFormatException e) {
-                    player.sendMessage("§cUsage: /auction sell <price>");
+                    player.sendMessage(core.message("usage.auction_sell", "{prefix}&cUsage: /auction sell <price>"));
                 }
                 return true;
             }
@@ -58,29 +83,46 @@ public class FluxisCommand implements CommandExecutor {
             return true;
         }
 
-        if (label.equalsIgnoreCase("trade")) {
+        if (commandName.equalsIgnoreCase("trade")) {
+            if (!player.hasPermission("fluxis.command.trade")) {
+                player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
+                return true;
+            }
             if (args.length < 1) {
-                player.sendMessage("§cUsage: /trade <player>");
+                player.sendMessage(core.message("usage.trade", "{prefix}&cUsage: /trade <player>"));
                 return true;
             }
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null || !target.isOnline()) {
-                player.sendMessage("§cPlayer not found!");
+                player.sendMessage(core.message("errors.player_not_found", "{prefix}&cPlayer not found!"));
                 return true;
             }
             if (target.equals(player)) {
-                player.sendMessage("§cYou cannot trade with yourself!");
+                player.sendMessage(core.message("errors.trade_self", "{prefix}&cYou cannot trade with yourself!"));
                 return true;
             }
             core.getTradeModule().getTradeManager().acceptRequest(player, target);
             return true;
         }
 
-        if (label.equalsIgnoreCase("fluxis")) {
+        if (commandName.equalsIgnoreCase("fluxis")) {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("balance")) {
                     double bal = core.getEconomyManager().getBalance(player.getUniqueId());
-                    player.sendMessage("§eYour Balance: §f" + String.format("%.2f", bal) + " Money");
+                    String msg = core.message("info.balance", "{prefix}&eYour Balance: &f{amount} {currency}");
+                    player.sendMessage(msg
+                        .replace("{amount}", String.format("%.2f", bal))
+                        .replace("{currency}", core.getEconomyConfig().getString("currency.name", "Money")));
+                    return true;
+                }
+
+                if (args[0].equalsIgnoreCase("reload")) {
+                    if (player.hasPermission("fluxis.admin")) {
+                        core.reloadAllConfigs();
+                        player.sendMessage(core.message("info.config_reloaded", "{prefix}&aAll Fluxis configs reloaded!"));
+                    } else {
+                        player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
+                    }
                     return true;
                 }
                 
@@ -88,18 +130,29 @@ public class FluxisCommand implements CommandExecutor {
                     if (player.hasPermission("fluxis.admin")) {
                         core.getAdminGUI().open(player);
                     } else {
-                        player.sendMessage("§cYou don't have permission to use the admin panel!");
+                        player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
+                    }
+                    return true;
+                }
+
+                if (args[0].equalsIgnoreCase("event")) {
+                    if (player.hasPermission("fluxis.admin")) {
+                        core.getEventGUI().open(player);
+                    } else {
+                        player.sendMessage(core.message("errors.no_permission", "{prefix}&cYou don't have permission!"));
                     }
                     return true;
                 }
             }
             
-            player.sendMessage("§eFluxis Ecosystem §7- Modular Economy");
-            player.sendMessage("§7/shop - Open the dynamic shop");
-            player.sendMessage("§7/sell - Bulk sell items");
-            player.sendMessage("§7/fluxis balance - Check your money");
+            player.sendMessage(core.message("help.header", "&eFluxis Ecosystem &7- Modular Economy"));
+            player.sendMessage(core.message("help.shop", "&7/shop - Open the dynamic shop"));
+            player.sendMessage(core.message("help.sell", "&7/sell - Bulk sell items"));
+            player.sendMessage(core.message("help.balance", "&7/fluxis balance - Check your money"));
             if (player.hasPermission("fluxis.admin")) {
-                player.sendMessage("§c/fluxis menu - Admin Control Panel");
+                player.sendMessage(core.message("help.menu", "&c/fluxis menu - Admin Control Panel"));
+                player.sendMessage(core.message("help.reload", "&c/fluxis reload - Reload all configs"));
+                player.sendMessage(core.message("help.event", "&c/fluxis event - Open event panel"));
             }
         }
 

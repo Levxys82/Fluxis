@@ -30,6 +30,10 @@ public class DataManager {
     }
 
     public void saveMarketData(Map<Material, MarketItem> marketItems) {
+        if (core.getDatabaseManager() != null && core.getDatabaseManager().isMysqlEnabled()) {
+            core.getDatabaseManager().saveJson("market_memory", gson.toJson(marketItems));
+            return;
+        }
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(dataFile), StandardCharsets.UTF_8)) {
             gson.toJson(marketItems, writer);
         } catch (IOException e) {
@@ -38,6 +42,14 @@ public class DataManager {
     }
 
     public Map<Material, MarketItem> loadMarketData() {
+        if (core.getDatabaseManager() != null && core.getDatabaseManager().isMysqlEnabled()) {
+            String json = core.getDatabaseManager().loadJson("market_memory");
+            if (json == null || json.isBlank()) return new ConcurrentHashMap<>();
+            Type type = new TypeToken<ConcurrentHashMap<Material, MarketItem>>() {}.getType();
+            Map<Material, MarketItem> loadedItems = gson.fromJson(json, type);
+            return loadedItems != null ? loadedItems : new ConcurrentHashMap<>();
+        }
+
         if (!dataFile.exists()) return new ConcurrentHashMap<>();
 
         try (Reader reader = new InputStreamReader(new FileInputStream(dataFile), StandardCharsets.UTF_8)) {

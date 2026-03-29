@@ -1,0 +1,21 @@
+menu:
+  title: "&8Fluxis Shop Groups"
+  size: 27
+
+groups:
+  foods:
+    display: "&6Foods"
+    icon: "BREAD"
+    items:
+      - BREAD
+      - COOKED_BEEF
+      - CARROT
+      - POTATO
+  mines:
+    display: "&7Mines"
+    icon: "IRON_PICKAXE"
+    items:
+      - COAL
+      - IRON_INGOT
+      - COBBLESTONE
+      - OAK_LOG

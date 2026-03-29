@@ -1,0 +1,11 @@
+database:
+  mode: "mysql" # mysql, flatfile
+  autosave_seconds: 60
+
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  database: "fluxis"
+  username: "root"
+  password: "change-me"
+  pool_size: 10

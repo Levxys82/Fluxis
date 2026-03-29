@@ -1,0 +1,5 @@
+title: "&6Harvest Festival"
+message: "&eHarvest season! Everyone receives a farming bonus payout."
+reward: 150.0
+economy_modifier: 0.95
+duration_seconds: 600

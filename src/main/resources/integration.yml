@@ -1,0 +1,14 @@
+platform:
+  loader: "bukkit-family" # bukkit-family only (Spigot/Paper/Purpur/Folia)
+  minimum_supported: "1.20"
+
+hooks:
+  placeholderapi: true
+  vault: true
+
+events:
+  loop_interval_seconds: 900
+
+notes:
+  - "Sponge loader is not supported by this artifact."
+  - "For legacy versions (<1.20), build and compatibility guarantees are not provided."
