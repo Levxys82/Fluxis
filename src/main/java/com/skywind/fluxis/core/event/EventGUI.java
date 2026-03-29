@@ -26,8 +26,8 @@ public class EventGUI {
         inv.setItem(10, createButton(core.getEventManager().isLoopEnabled() ? Material.LIME_DYE : Material.GRAY_DYE,
             "§eLoop: " + (core.getEventManager().isLoopEnabled() ? "§aON" : "§cOFF"),
             "§7Click to toggle loop mode"));
-        inv.setItem(12, createButton(Material.CLOCK, "§bTrigger Next Event", "§7Run next event in cycle now"));
-        inv.setItem(14, createButton(Material.PAPER, "§fReload Event Files", "§7Reload /plugins/Fluxis/events/*.yml"));
+        inv.setItem(13, createButton(Material.CLOCK, "§bTrigger Next Event", "§7Run next event in cycle now"));
+        inv.setItem(16, createButton(Material.PAPER, "§fReload Event Files", "§7Reload /plugins/Fluxis/events/*.yml"));
 
         int slot = 27;
         for (EventManager.FluxisEvent event : core.getEventManager().getEvents()) {

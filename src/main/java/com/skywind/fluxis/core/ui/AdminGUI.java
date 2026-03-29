@@ -28,10 +28,10 @@ public class AdminGUI {
             "§7shop.yml, database.yml and integration.yml"));
         
         // Reset Market Prices
-        inv.setItem(12, createItem(Material.BLAZE_POWDER, "§cReset Market Prices", "§7Reset all item prices to their base values"));
+        inv.setItem(13, createItem(Material.BLAZE_POWDER, "§cReset Market Prices", "§7Reset all item prices to their base values"));
         
         // Server Info
-        inv.setItem(14, createItem(Material.BEACON, "§bServer Activity", 
+        inv.setItem(16, createItem(Material.BEACON, "§bServer Activity", 
             "§7Current Multiplier: §f" + String.format("%.2f", core.getMarketManager().getActivityMultiplier()),
             "§7Online Players: §f" + Bukkit.getOnlinePlayers().size()));
 

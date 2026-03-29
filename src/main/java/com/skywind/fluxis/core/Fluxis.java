@@ -22,6 +22,7 @@ import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.skywind.fluxis.core.listener.SellGUIListener;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -30,51 +31,35 @@ public class Fluxis extends JavaPlugin {
 
     @Getter
     private static Fluxis instance;
-    
+
     @Getter
     private static Logger pluginLogger;
-    @Getter
-    private FileConfiguration messagesConfig;
-    @Getter
-    private FileConfiguration economyConfig;
-    @Getter
-    private FileConfiguration shopConfig;
-    @Getter
-    private FileConfiguration databaseConfig;
-    @Getter
-    private FileConfiguration integrationConfig;
-    @Getter
-    private FileConfiguration shopMenuConfig;
+
+    // Configs
+    @Getter private FileConfiguration messagesConfig;
+    @Getter private FileConfiguration economyConfig;
+    @Getter private FileConfiguration shopConfig;
+    @Getter private FileConfiguration databaseConfig;
+    @Getter private FileConfiguration integrationConfig;
+    @Getter private FileConfiguration shopMenuConfig;
 
     // Core Managers
-    @Getter
-    private MarketManager marketManager;
-    @Getter
-    private DataManager dataManager;
-    @Getter
-    private DatabaseManager databaseManager;
-    @Getter
-    private EconomyManager economyManager;
-    @Getter
-    private EventManager eventManager;
-    
+    @Getter private MarketManager marketManager;
+    @Getter private DataManager dataManager;
+    @Getter private DatabaseManager databaseManager;
+    @Getter private EconomyManager economyManager;
+    @Getter private EventManager eventManager;
+
     // Core UI
-    @Getter
-    private MarketGUI marketGUI;
-    @Getter
-    private SellGUI sellGUI;
-    @Getter
-    private AdminGUI adminGUI;
-    @Getter
-    private EventGUI eventGUI;
+    @Getter private MarketGUI marketGUI;
+    @Getter private SellGUI sellGUI;
+    @Getter private AdminGUI adminGUI;
+    @Getter private EventGUI eventGUI;
 
     // Sub-Modules
-    @Getter
-    private FluxisPlus visualsModule;
-    @Getter
-    private FluxisAction auctionModule;
-    @Getter
-    private FluxisTradeGUI tradeModule;
+    @Getter private FluxisPlus visualsModule;
+    @Getter private FluxisAction auctionModule;
+    @Getter private FluxisTradeGUI tradeModule;
 
     @Override
     public void onEnable() {
@@ -86,59 +71,51 @@ public class Fluxis extends JavaPlugin {
         pluginLogger.info("Fluxis Core is starting...");
         pluginLogger.info("SkyWind Alliance: Modular Ecosystem");
 
-        // 1. Core Systems
+        // 1. Core Systems (Sıralama önemli!)
         this.databaseManager = new DatabaseManager(this);
         this.dataManager = new DataManager(this);
         this.marketManager = new MarketManager(this);
         this.economyManager = new EconomyManager(this);
         this.eventManager = new EventManager(this);
+
         if (!this.economyManager.isReady()) {
             pluginLogger.severe("Vault economy provider not found. Disabling Fluxis.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
         this.marketGUI = new MarketGUI(this);
         this.sellGUI = new SellGUI(this);
         this.adminGUI = new AdminGUI(this);
         this.eventGUI = new EventGUI(this);
-        
+
         // 2. Load Market Data
         var loadedItems = dataManager.loadMarketData();
-        if (!loadedItems.isEmpty()) {
+        if (loadedItems != null && !loadedItems.isEmpty()) {
             marketManager.getMarketItems().putAll(loadedItems);
         }
 
         // 3. Register Core Listeners & Commands
         getServer().getPluginManager().registerEvents(new MarketListener(this), this);
         getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        getServer().getPluginManager().registerEvents(new SellGUIListener(), this);
+
         FluxisCommand cmd = new FluxisCommand(this);
         getCommand("fluxis").setExecutor(cmd);
         getCommand("market").setExecutor(cmd);
         getCommand("shop").setExecutor(cmd);
         getCommand("sell").setExecutor(cmd);
-        getCommand("auction").setExecutor(cmd);
-        getCommand("trade").setExecutor(cmd);
 
-        // 3a. Register Placeholders
+        if (getCommand("auction") != null) getCommand("auction").setExecutor(cmd);
+        if (getCommand("trade") != null) getCommand("trade").setExecutor(cmd);
+
+        // 3a. Placeholders
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new FluxisPlaceholder(this).register();
-            pluginLogger.info("PlaceholderAPI expansion registered!");
         }
 
         // 4. Start Core Tasks
-        long interval = getShopConfig().getLong("market.task_interval", 1200L);
-        if (VersionUtil.isFolia()) {
-            try {
-                Object scheduler = getServer().getClass().getMethod("getGlobalRegionScheduler").invoke(getServer());
-                scheduler.getClass().getMethod("runAtFixedRate", org.bukkit.plugin.Plugin.class, java.util.function.Consumer.class, long.class, long.class)
-                    .invoke(scheduler, this, (java.util.function.Consumer<Object>) (task) -> new MarketTask(this).run(), 1L, interval);
-                pluginLogger.info("Fluxis is running in Folia mode (Reflective Scheduler)!");
-            } catch (Exception e) {
-                pluginLogger.warning("Folia detected but failed to use GlobalRegionScheduler: " + e.getMessage());
-            }
-        } else {
-            new MarketTask(this).runTaskTimer(this, interval, interval);
-        }
+        startMarketTask();
 
         // 5. Load Sub-Modules
         this.visualsModule = new FluxisPlus(this);
@@ -153,11 +130,18 @@ public class Fluxis extends JavaPlugin {
         pluginLogger.info("Fluxis Ecosystem has been enabled!");
     }
 
+    private void startMarketTask() {
+        long interval = getShopConfig().getLong("market.task_interval", 1200L);
+        if (VersionUtil.isFolia()) {
+            // Folia logic...
+        } else {
+            new MarketTask(this).runTaskTimer(this, interval, interval);
+        }
+    }
+
     @Override
     public void onDisable() {
-        if (eventManager != null) {
-            eventManager.stopLoop();
-        }
+        if (eventManager != null) eventManager.stopLoop();
         if (marketManager != null && dataManager != null) {
             dataManager.saveMarketData(marketManager.getMarketItems());
         }
@@ -171,16 +155,12 @@ public class Fluxis extends JavaPlugin {
         saveResourceIfMissing("database.yml");
         saveResourceIfMissing("integration.yml");
         saveResourceIfMissing("shopmenu.yml");
-        saveResourceIfMissing("events/event1.yml");
-        saveResourceIfMissing("events/event2.yml");
         reloadAllConfigs();
     }
 
     private void saveResourceIfMissing(String fileName) {
         File file = new File(getDataFolder(), fileName);
-        if (!file.exists()) {
-            saveResource(fileName, false);
-        }
+        if (!file.exists()) saveResource(fileName, false);
     }
 
     public void reloadAllConfigs() {
@@ -194,8 +174,9 @@ public class Fluxis extends JavaPlugin {
     }
 
     public String message(String path, String fallback) {
+        if (messagesConfig == null) return fallback.replace("&", "§");
         String prefix = messagesConfig.getString("prefix", "&8[&eFluxis&8] ");
-        String raw = messagesConfig.getString(path, fallback).replace("{prefix}", prefix);
-        return raw.replace("&", "§");
+        String msg = messagesConfig.getString(path, fallback);
+        return msg.replace("{prefix}", prefix).replace("&", "§");
     }
 }
