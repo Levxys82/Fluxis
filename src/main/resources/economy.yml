@@ -1,0 +1,9 @@
+# Vault-backed economy settings
+currency:
+  name: "Money"
+  symbol: "$"
+  decimals: 2
+
+vault:
+  required: true
+  fail_if_no_provider: true

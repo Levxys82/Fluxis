@@ -1,0 +1,5 @@
+title: "&cMine Rush"
+message: "&7Ore demand is exploding! Taxes increase while rewards flow."
+reward: 200.0
+economy_modifier: 1.10
+duration_seconds: 600

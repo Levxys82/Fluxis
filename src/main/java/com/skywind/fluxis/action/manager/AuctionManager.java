@@ -65,6 +65,10 @@ public class AuctionManager {
     }
 
     public void saveAuctions() {
+        if (core.getDatabaseManager() != null && core.getDatabaseManager().isMysqlEnabled()) {
+            core.getDatabaseManager().saveJson("auctions", gson.toJson(auctions));
+            return;
+        }
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(dataFile), StandardCharsets.UTF_8)) {
             gson.toJson(auctions, writer);
         } catch (IOException e) {
@@ -73,6 +77,15 @@ public class AuctionManager {
     }
 
     private void loadAuctions() {
+        if (core.getDatabaseManager() != null && core.getDatabaseManager().isMysqlEnabled()) {
+            String json = core.getDatabaseManager().loadJson("auctions");
+            if (json == null || json.isBlank()) return;
+            Type type = new TypeToken<ArrayList<AuctionItem>>() {}.getType();
+            List<AuctionItem> loaded = gson.fromJson(json, type);
+            if (loaded != null) auctions.addAll(loaded);
+            return;
+        }
+
         if (!dataFile.exists()) return;
         try (Reader reader = new InputStreamReader(new FileInputStream(dataFile), StandardCharsets.UTF_8)) {
             Type type = new TypeToken<ArrayList<AuctionItem>>() {}.getType();

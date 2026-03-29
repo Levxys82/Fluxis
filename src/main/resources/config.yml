@@ -5,32 +5,12 @@
 # Prefix for messages
 prefix: "§8[§eFluxis§8] "
 
-# --- Economy Engine ---
-economy:
-  starting_balance: 0.0
-  currency_name: "Money"
-
-# --- Market Dynamics ---
-market:
-  # How much price changes per item (0.005 = 0.5%)
-  default_volatility: 0.005
-  # How fast prices drift back to base (0.001 = 0.1% per minute)
-  stabilization_rate: 0.001
-  # Price difference between Buy and Sell (0.7 = 30% spread)
-  sell_price_multiplier: 0.7
-  # Stabilization task interval in ticks (1200L = 1 minute)
-  task_interval: 1200
+# --- Plugin Core ---
+plugin:
+  debug: false
 
 # --- Modules ---
 modules:
   plus: true
   action: true
   trade: true
-
-# --- Trading ---
-trade:
-  request_timeout_seconds: 60
-
-# --- Auction House ---
-auction:
-  expire_time_hours: 48

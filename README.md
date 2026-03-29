@@ -4,7 +4,7 @@
   <img src="https://raw.githubusercontent.com/Levxys/Fluxis/main/icon.svg" width="128" height="128" alt="Fluxis Logo" />
 </p>
 
-Fluxis is a high-performance, modular economy plugin for Minecraft (Spigot/Paper) that brings **Dynamic Pricing**, **Stock-based Markets**, and **Advanced Trading** to your server. 
+Fluxis is a high-performance, modular economy plugin for Minecraft (Spigot/Paper/Purpur/Folia) that brings **Dynamic Pricing**, **Stock-based Markets**, and **Advanced Trading** to your server. 
 
 Designed for the **SkyWind Alliance**, Fluxis ensures a balanced, living economy where player actions directly influence market value.
 
@@ -64,6 +64,25 @@ Designed for the **SkyWind Alliance**, Fluxis ensures a balanced, living economy
 | `/auction sell <price>` | List your hand item for auction |
 | `/trade <player>` | Request a safe trade with another player |
 | `/fluxis balance` | Check your current Money |
+| `/fluxis reload` | Reload all Fluxis config files (admin) |
+| `/fluxis event` | Open event control panel (admin) |
+
+---
+
+## 🔐 Permissions
+
+| Permission | Description | Default |
+| :--- | :--- | :--- |
+| `fluxis.use` | Base permission for `/fluxis` | `true` |
+| `fluxis.command.market` | Use `/market` and `/shop` | `true` |
+| `fluxis.command.sell` | Use `/sell` | `true` |
+| `fluxis.command.auction` | Use `/auction` | `true` |
+| `fluxis.command.trade` | Use `/trade` | `true` |
+| `fluxis.market.buy` | Buy from market GUI | `true` |
+| `fluxis.market.sell` | Sell to market GUI | `true` |
+| `fluxis.auction.buy` | Buy from auction GUI | `true` |
+| `fluxis.auction.sell` | List items with `/auction sell` | `true` |
+| `fluxis.admin` | Admin panel and reload access | `op` |
 
 ---
 
@@ -78,8 +97,34 @@ Designed for the **SkyWind Alliance**, Fluxis ensures a balanced, living economy
 ## 🚀 Installation
 1. Download the latest `.jar` from Modrinth or GitHub.
 2. Place it in your `plugins/` folder.
-3. (Optional) Install **PlaceholderAPI** for scoreboard integration.
-4. Restart your server.
+3. Install **Vault** and at least one Vault-compatible economy plugin.
+4. (Optional) Install **PlaceholderAPI** for scoreboard integration.
+5. Restart your server.
+
+---
+
+## ⚙️ Configuration Files
+- `config.yml` → core plugin settings and module toggles
+- `messages.yml` → all chat/admin messages
+- `economy.yml` → currency display + Vault behavior
+- `shop.yml` → market, trade and auction tuning
+- `shopmenu.yml` → grouped shop layout (e.g. Foods, Mines)
+- `database.yml` → storage mode and DB credentials (**default: mysql**)
+- `integration.yml` → platform/hook metadata
+- `events/*.yml` → event definitions loaded by Event Panel
+
+---
+
+## 🧩 Compatibility
+- Supported runtime family: **Bukkit API compatible servers** (Spigot, Paper, Purpur, Folia).
+- Vault is required for economy operations.
+- Sponge loader is not supported by this artifact.
+
+### Admin Runbook (Quick)
+1. Configure `database.yml` MySQL credentials before first production start.
+2. Start server once; verify no Vault/MySQL errors in console.
+3. Use `/fluxis reload` after changing YAML files.
+4. If permissions look wrong, re-check your permission plugin nodes listed above.
 
 ---
 

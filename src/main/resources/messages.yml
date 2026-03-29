@@ -1,0 +1,44 @@
+prefix: "&8[&eFluxis&8] "
+
+errors:
+  players_only: "{prefix}&cThis command is for players only!"
+  no_permission: "{prefix}&cYou don't have permission!"
+  invalid_number: "{prefix}&cInvalid number!"
+  player_not_found: "{prefix}&cPlayer not found!"
+  trade_self: "{prefix}&cYou cannot trade with yourself!"
+  not_enough_money: "{prefix}&cYou don't have enough money!"
+  not_enough_stock: "{prefix}&cNot enough stock in the market!"
+  not_enough_items: "{prefix}&cYou don't have enough {item} to sell!"
+  hold_item_required: "{prefix}&cYou must hold an item in your hand!"
+  auction_price_positive: "{prefix}&cPrice must be greater than 0."
+
+info:
+  balance: "{prefix}&eYour Balance: &f{amount} {currency}"
+  config_reloaded: "{prefix}&aAll Fluxis configs reloaded!"
+  market_reset: "{prefix}&aMarket prices reset to base values!"
+  item_listed: "{prefix}&aItem listed in Auction House for {amount} {currency}"
+  bought: "{prefix}&aBought {qty}x {item} for {amount} {currency}"
+  sold: "{prefix}&aSold {qty}x {item} for {amount} {currency}"
+  bulk_sold: "{prefix}&aFluxis Vault: Sold {qty} items for {amount} {currency}"
+  tax_applied: "{prefix}&7Tax: &f{tax} ({rate}%)"
+
+usage:
+  auction_sell: "{prefix}&cUsage: /auction sell <price>"
+  trade: "{prefix}&cUsage: /trade <player>"
+
+help:
+  header: "&eFluxis Ecosystem &7- Modular Economy"
+  shop: "&7/shop - Open the dynamic shop"
+  sell: "&7/sell - Bulk sell items"
+  balance: "&7/fluxis balance - Check your money"
+  menu: "&c/fluxis menu - Admin Control Panel"
+  reload: "&c/fluxis reload - Reload all configs"
+  event: "&c/fluxis event - Open event panel"
+
+auction:
+  errors:
+    not_found: "{prefix}&cAuction not found or already ended."
+    self_buy: "{prefix}&cYou cannot buy your own item!"
+    purchase_failed: "{prefix}&cPurchase failed: Not enough money!"
+  info:
+    purchase_success: "{prefix}&aPurchase successful: &f{item} for {amount} {currency}"

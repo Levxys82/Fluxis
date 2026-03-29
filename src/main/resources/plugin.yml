@@ -1,31 +1,65 @@
 name: Fluxis
-version: 1.0.0
+version: ${project.version}
 main: com.skywind.fluxis.core.Fluxis
 api-version: 1.20
 description: Modular Economy Ecosystem (Core, Plus, Action, TradeGUI)
 authors: [Levxys, SkyWind]
 website: https://github.com/Levxys/Fluxis
+depend: [Vault]
 softdepend: [PlaceholderAPI]
 commands:
   fluxis:
     description: Main command for Fluxis
-    usage: /<command>
+    usage: /<command> [balance|menu|reload|event]
+    permission: fluxis.use
   market:
     description: Open the dynamic market
     usage: /<command>
+    permission: fluxis.command.market
   shop:
     description: Open the dynamic shop
     usage: /<command>
+    permission: fluxis.command.market
   sell:
     description: Open the sell menu to Fluxis vault
     usage: /<command>
+    permission: fluxis.command.sell
   auction:
     description: Open the Fluxis Action auction house
     usage: /<command>
+    permission: fluxis.command.auction
   trade:
     description: Start a trade with a player
     usage: /<command> <player>
+    permission: fluxis.command.trade
 permissions:
+  fluxis.use:
+    description: Base permission to use /fluxis
+    default: true
+  fluxis.command.market:
+    description: Allows use of /market and /shop
+    default: true
+  fluxis.command.sell:
+    description: Allows use of /sell
+    default: true
+  fluxis.command.auction:
+    description: Allows use of /auction
+    default: true
+  fluxis.command.trade:
+    description: Allows use of /trade
+    default: true
+  fluxis.market.buy:
+    description: Allows buying items from market GUI
+    default: true
+  fluxis.market.sell:
+    description: Allows selling items to market GUI
+    default: true
+  fluxis.auction.buy:
+    description: Allows buying items from auction GUI
+    default: true
+  fluxis.auction.sell:
+    description: Allows listing items with /auction sell
+    default: true
   fluxis.admin:
     description: Admin permissions for Fluxis
     default: op

@@ -80,7 +80,7 @@ public class MarketManager {
         MarketItem item = marketItems.get(material);
         if (item == null || item.getStock() < quantity) return;
 
-        double volatility = core.getConfig().getDouble("market.default_volatility", 0.005);
+        double volatility = core.getShopConfig().getDouble("market.default_volatility", 0.005);
         double activityMultiplier = getActivityMultiplier();
         double priceChange = 1.0 + (quantity * volatility * activityMultiplier);
         
@@ -97,7 +97,7 @@ public class MarketManager {
         MarketItem item = marketItems.get(material);
         if (item == null) return;
 
-        double volatility = core.getConfig().getDouble("market.default_volatility", 0.005);
+        double volatility = core.getShopConfig().getDouble("market.default_volatility", 0.005);
         double activityMultiplier = getActivityMultiplier();
         double priceChange = 1.0 - (quantity * volatility * activityMultiplier);
         
@@ -113,5 +113,20 @@ public class MarketManager {
     public double getActivityMultiplier() {
         int onlinePlayers = Bukkit.getOnlinePlayers().size();
         return ACTIVITY_BASE + (onlinePlayers / 5.0 * 0.1);
+    }
+
+    public double calculateTaxRate(MarketItem item) {
+        double baseTax = core.getShopConfig().getDouble("tax.base_rate", 0.02);
+        double minTax = core.getShopConfig().getDouble("tax.min_rate", 0.005);
+        double maxTax = core.getShopConfig().getDouble("tax.max_rate", 0.10);
+        boolean adaptive = core.getShopConfig().getBoolean("tax.adaptive", true);
+        if (!adaptive || item == null) {
+            return Math.max(minTax, Math.min(maxTax, baseTax));
+        }
+
+        double demandPressure = (item.getBuyVolume() - item.getSellVolume()) / 200.0;
+        double stockPressure = Math.max(0, 1.0 - (item.getStock() / 1000.0));
+        double dynamicTax = baseTax + (demandPressure * 0.01) + (stockPressure * 0.01);
+        return Math.max(minTax, Math.min(maxTax, dynamicTax));
     }
 }
