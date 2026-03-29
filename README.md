@@ -87,10 +87,48 @@ Designed for the **SkyWind Alliance**, Fluxis ensures a balanced, living economy
 ---
 
 ## 🔗 PlaceholderAPI Support
-- `%fluxis_balance%` - Current player balance
-- `%fluxis_market_price_<MATERIAL>%` - Current market price of an item
-- `%fluxis_market_trend_<MATERIAL>%` - Visual trend of an item
-- `%fluxis_market_stock_<MATERIAL>%` - Current stock level in the vault
+
+> ⚠️ Requires `/papi ecloud download Fluxis` and `placeholder.ecloud-verified: true` in config.yml
+
+### 👤 Player
+| Placeholder | Description |
+|---|---|
+| `%fluxis_balance%` | Current player balance |
+| `%fluxis_balance_formatted%` | Balance with thousands separator (1,250.00) |
+| `%fluxis_balance_fixed%` | Shortened balance (1.2K, 3.5M, 2.1B) |
+| `%fluxis_total_earnings%` | Total earnings of the player |
+| `%fluxis_total_transactions%` | Total transaction count of the player |
+| `%fluxis_top_sold_item%` | Most sold item by the player |
+
+### 📈 Market (Per Item)
+| Placeholder | Description |
+|---|---|
+| `%fluxis_market_price_<MATERIAL>%` | Current market price |
+| `%fluxis_market_trend_<MATERIAL>%` | Visual price trend |
+| `%fluxis_market_stock_<MATERIAL>%` | Current stock level |
+| `%fluxis_market_base_price_<MATERIAL>%` | Base/default price |
+| `%fluxis_market_min_price_<MATERIAL>%` | Minimum possible price |
+| `%fluxis_market_max_price_<MATERIAL>%` | Maximum possible price |
+
+### 🌍 Market (Global)
+| Placeholder | Description |
+|---|---|
+| `%fluxis_multiplier%` | Current activity multiplier |
+| `%fluxis_market_item_count%` | Total registered market items |
+| `%fluxis_most_traded_item%` | Most traded item server-wide |
+
+### 🖥️ Server
+| Placeholder | Description |
+|---|---|
+| `%fluxis_server_total_transactions%` | Total transactions server-wide |
+| `%fluxis_server_total_volume%` | Total trade volume server-wide |
+| `%fluxis_online_traders%` | Currently online player count |
+
+### ⏰ Time
+| Placeholder | Description |
+|---|---|
+| `%fluxis_last_transaction_time%` | Time of last transaction |
+| `%fluxis_next_market_update%` | Time until next market update |
 
 ---
 
